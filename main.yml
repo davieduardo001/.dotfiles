@@ -1,0 +1,32 @@
+---
+  - name: Prepare the workstation
+    hosts: localhost
+    connection: local
+
+    tasks:
+       
+      # install dependecies
+      - name: Installing linux apps
+        become: true
+        pacman:
+          name: '{{ item }}'
+          state: present
+        loop:
+          - neovim
+          - lf
+      
+      # oh my bash
+      - block:
+        - name: Verify if oh-my-bash is installed
+          stat:
+              path: ~/.oh-my-bash
+          register: omb_installed
+
+        - name: Installing oh-my-bash
+          command: bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+          when: not omb_installed.stat.exists
+        
+        - name: Changing the theme of bash
+          path: ~/.bashrc
+          line: 'OSH_THEME="clean"'
+

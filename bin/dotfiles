@@ -10,6 +10,11 @@ if ! [ -x "$(command -v ansible)" ]; then
   sudo pacman -S ansible --noconfirm
 fi
 
+# GIT
+if ! [[ -x "$command -v git" ]]; then
+  sudo pacman -S git --noconfirm
+fi
+
 # SSH
 if ! [[ -f "$SSH_DIR/id_rsa" ]]; then
   mkdir -p "$SSH_DIR"
@@ -23,12 +28,14 @@ if ! [[ -f "$SSH_DIR/id_rsa" ]]; then
   chmod 600 "$SSH_DIR/authorized_keys"
 fi
 
+# install the requirements
 if [[ -f "$DOTFILES_DIR/requirements.yml" ]]; then
   cd "$DOTFILES_DIR"
 
   ansible-galaxy install -r requirements.yml
 fi
 
+# run the playbook
 cd "$DOTFILES_DIR"
 
 ansible-playbook --diff "$DOTFILES_DIR/main.yml"
