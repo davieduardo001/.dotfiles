@@ -58,8 +58,16 @@
           - name: adding alias
             lineinfile:
               path: '{{ ansible_user_dir }}/.bashrc'
-              regexp: '^alias vi="lvim"'
-      
+              line: |
+                alias vi="lvim"
+                alias dotfiles="$HOME/.dotfiles/bin/dotfiles"
+              regexp: '^alias\s+(vi|dotfiles)='  # Adjust the regex to match your alias definitions
+              state: present
+          
+          - name: source the bash file
+            shell: |
+              . $HOME/.bashrc      
+
       # install firacode
       - name: install fira code
         block:
