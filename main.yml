@@ -1,3 +1,4 @@
+---
   - name: Prepare the workstation
     hosts: localhost
     connection: local
@@ -21,6 +22,7 @@
               - curl
               - kitty
               - syncthing
+              - python-pip
       
       # INSTALL YAY APPS
       - name: Installing with yay
@@ -34,6 +36,7 @@
               - obsidian
               - keepass
               - spotify
+              - nvm
 
       # OH MY BASH
       - name: install oh my bash
