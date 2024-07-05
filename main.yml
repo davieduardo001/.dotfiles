@@ -1,32 +1,90 @@
----
   - name: Prepare the workstation
     hosts: localhost
     connection: local
 
+    vars:
+      ansible:
+        library: $HOME/.dotfiles/library/
+
     tasks:
-       
-      # install dependecies
-      - name: Installing linux apps
-        become: true
-        pacman:
-          name: '{{ item }}'
-          state: present
-        loop:
-          - neovim
-          - lf
+      # INSTALL PACMAN APPS
+      - name: Installing with pacman
+        block:
+          - name: loop for instalation
+            pacman:
+              name: '{{ item }}'
+              state: present
+            loop:
+              - neovim
+              - lf
+              - base-devel
+              - curl
+              - kitty
+              - syncthing
       
-      # oh my bash
-      - block:
-        - name: Verify if oh-my-bash is installed
-          stat:
-              path: ~/.oh-my-bash
-          register: omb_installed
+      # INSTALL YAY APPS
+      - name: Installing with yay
+        block:
+          - name: loop for the instalation
+            yay: 
+              name: '{{ item }}'
+              state: present
+            loop:
+              - code
+              - obsidian
+              - keepass
+              - spotify
 
-        - name: Installing oh-my-bash
-          command: bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
-          when: not omb_installed.stat.exists
-        
-        - name: Changing the theme of bash
-          path: ~/.bashrc
-          line: 'OSH_THEME="clean"'
+      # OH MY BASH
+      - name: install oh my bash
+        block:
+          - name: Verify if oh-my-bash is installed
+            stat:
+              path: '{{ ansible_user_dir }}/.oh-my-bash'
+            register: omb_installed
 
+          - name: Installing oh-my-bash
+            command: bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+            args:
+              warn: false
+            when: not omb_installed.stat.exists
+          
+          - name: Changing the theme of bash
+            lineinfile:
+              path: '{{ ansible_user_dir }}/.bashrc'
+              regexp: '^OSH_THEME='
+              line: 'OSH_THEME="clean"'
+
+          - name: adding alias
+            lineinfile:
+              path: '{{ ansible_user_dir }}/.bashrc'
+              regexp: '^alias vi="lvim"'
+      
+      # install firacode
+      - name: install fira code
+        block:
+            - name: Find FiraCode fonts
+              find:
+                paths: '{{ ansible_user_dir }}/.local/share/fonts/'
+                patterns: 'FiraCode*'
+              register: firacode_found
+
+            - name: Ensure fonts directory exists
+              file:
+                path: '{{ ansible_user_dir }}/.local/share/fonts'
+                state: directory
+                mode: '0755'
+
+            - name: Download FiraCode zip
+              get_url:
+                url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip
+                dest: /tmp/FiraCode.zip
+              when: firacode_found.matched == 0
+
+            - name: Unzip FiraCode fonts
+              command: unzip /tmp/FiraCode.zip -d {{ ansible_user_dir }}/.local/share/fonts/
+              when: firacode_found.matched == 0
+
+            - name: Update font cache
+              command: fc-cache -fv
+              when: firacode_found.matched == 0

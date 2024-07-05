@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -e # exit in a error
 
 SSH_DIR="$HOME/.ssh"
 DOTFILES_DIR="$HOME/.dotfiles"
@@ -11,7 +11,7 @@ if ! [ -x "$(command -v ansible)" ]; then
 fi
 
 # GIT
-if ! [[ -x "$command -v git" ]]; then
+if ! [[ -x "$(command -v git)" ]]; then
   sudo pacman -S git --noconfirm
 fi
 
@@ -28,14 +28,23 @@ if ! [[ -f "$SSH_DIR/id_rsa" ]]; then
   chmod 600 "$SSH_DIR/authorized_keys"
 fi
 
-# install the requirements
+# install yay on ANSIBLE
+if ! [[ -f "$DOTFILES_DIR/library/yay" ]]; then
+  echo "Cloning ansible-yay repository..."
+
+  git clone https://github.com/mnussbaum/ansible-yay.git "$DOTFILES_DIR/library/ansible-yay"
+  mv "$DOTFILES_DIR/library/ansible-yay/yay" "$DOTFILES_DIR/library/"
+  rm -rf "$DOTFILES_DIR/library/ansible-yay"
+fi
+
+# Install the REQUIREMENTS
 if [[ -f "$DOTFILES_DIR/requirements.yml" ]]; then
   cd "$DOTFILES_DIR"
 
   ansible-galaxy install -r requirements.yml
 fi
 
-# run the playbook
+# Run the PLAYBOOK
 cd "$DOTFILES_DIR"
 
 ansible-playbook --diff "$DOTFILES_DIR/main.yml"
