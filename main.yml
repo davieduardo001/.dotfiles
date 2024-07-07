@@ -63,10 +63,16 @@
               path: '{{ ansible_user_dir }}/.bashrc'
               line: |
                 alias vi="lvim"
-                alias dotfiles="$HOME/.dotfiles/bin/dotfiles"
-              regexp: '^alias\s+(vi|dotfiles)='  # Adjust the regex to match your alias definitions
+              regexp: '^alias\s+(vi)='  # Adjust the regex to match your alias definitions
               state: present
-          
+
+          - name: adding alias
+            lineinfile:
+              path: '{{ ansible_user_dir }}/.bashrc'
+              line: |
+                alias dotfiles="$HOME/.dotfiles/bin/dotfiles"
+              regexp: '^alias\s+(dotfiles)='  # Adjust the regex to match your alias definitions
+              state: present         
           - name: source the bash file
             shell: |
               . $HOME/.bashrc      
