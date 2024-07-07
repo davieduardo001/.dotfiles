@@ -24,6 +24,7 @@
               - syncthing
               - python-pip
               - xclip
+              - bash
       
       # INSTALL YAY APPS
       - name: Installing with yay
@@ -36,9 +37,7 @@
               - code
               - obsidian
               - keepass
-              - spotify
               - nvm
-              - jetbrains-toolbox 
 
       # OH MY BASH
       - name: install oh my bash
@@ -49,7 +48,7 @@
             register: omb_installed
 
           - name: Installing oh-my-bash
-            command: bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+            command: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
             args:
               warn: false
             when: not omb_installed.stat.exists
@@ -147,5 +146,34 @@
             when: target_file.stat.exists is defined and target_file.stat.inode != original_file.stat.inode
 
           - name: Create hard link for config.lua if it does not exist or is not a hard link
-            command: ln '{{ ansible_user_dir }}/.dotfiles/dotfiles/lvim/config.lua' '{{ ansible_user_dir }}/.config/lvim/config.lua'
+            command: ln -sf '{{ ansible_user_dir }}/.dotfiles/dotfiles/lvim/config.lua' '{{ ansible_user_dir }}/.config/lvim/config.lua'
             when: target_file.stat.exists is not defined or target_file.stat.inode != original_file.stat.inode
+
+        # Configure LF
+      - name: Configure LF
+        block:
+          - name: Verify if the LF config directory exists
+            stat:
+              path: "{{ ansible_user_dir }}/.config/lf"
+            register: lf_already_exists
+
+          - name: Check if backup of LF config exists
+            stat:
+              path: "{{ ansible_user_dir }}/.dotfiles/lf_backup"
+            register: backup_file
+
+          - name: Remove the backup of LF config if it exists
+            file:
+              path: "{{ ansible_user_dir }}/.dotfiles/lf_backup"
+              state: absent
+            when: backup_file.stat.exists
+
+          - name: Backup original LF config directory
+            shell: >
+              mv "{{ ansible_user_dir }}/.config/lf" "{{ ansible_user_dir }}/.config/lf_backup"
+            when: lf_already_exists.stat.exists and lf_already_exists.stat.exists
+
+          - name: Create hard link for LF config directory if necessary
+            command: >
+              ln -sf "{{ ansible_user_dir }}/.dotfiles/lf_backup" "{{ ansible_user_dir }}/.config/lf"
+            when: not lf_already_exists.stat.exists

@@ -37,6 +37,17 @@ if ! [[ -f "$DOTFILES_DIR/library/yay" ]]; then
   rm -rf "$DOTFILES_DIR/library/ansible-yay"
 fi
 
+# install yay on YAY
+if ! [[ -x "$(command -v yay)" ]]; then
+  echo 'installing yay..'  
+  
+  git clone https://aur.archlinux.org/yay.git "$HOME/yay"
+
+  cd /tmp/yay | makepkg -si
+
+  rm -rf "$HOME/yay"
+fi
+
 # Install the REQUIREMENTS
 if [[ -f "$DOTFILES_DIR/requirements.yml" ]]; then
   cd "$DOTFILES_DIR"
