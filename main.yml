@@ -23,6 +23,7 @@
               - kitty
               - syncthing
               - python-pip
+              - xclip
       
       # INSTALL YAY APPS
       - name: Installing with yay
@@ -37,6 +38,7 @@
               - keepass
               - spotify
               - nvm
+              - jetbrains-toolbox 
 
       # OH MY BASH
       - name: install oh my bash
@@ -105,3 +107,7 @@
             - name: Update font cache
               command: fc-cache -fv
               when: firacode_found.matched == 0
+
+      - name: configure LVIM
+        block:
+          - name: installing dependecies
