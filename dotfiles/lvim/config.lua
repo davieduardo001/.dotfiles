@@ -32,4 +32,4 @@ lvim.plugins = {
   { "loctvl842/monokai-pro.nvim" },
 }
 
-lvim.colorscheme = "dracula"
+lvim.colorscheme = "monokai-pro"
