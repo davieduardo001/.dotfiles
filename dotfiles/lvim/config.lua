@@ -17,9 +17,6 @@ vim.o.clipboard = "unnamedplus"
 vim.o.relativenumber = true
 
 lvim.builtin.alpha.dashboard.section.header.val = {
-
-
-
 ".------..------..------..------.",
 "|K.--. ||I.--. ||N.--. ||G.--. |",
 "| :/\\: || (\\/) || :(): || :/\\: |",
@@ -31,7 +28,8 @@ lvim.builtin.alpha.dashboard.section.header.val = {
 -- plugins
 lvim.plugins = {
   { "lunarvim/colorschemes" },
-  { "Mofiqul/dracula.nvim" }
+  { "Mofiqul/dracula.nvim" },
+  { "loctvl842/monokai-pro.nvim" },
 }
 
 lvim.colorscheme = "dracula"
