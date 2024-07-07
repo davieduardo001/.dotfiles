@@ -108,16 +108,17 @@
             command: fc-cache -fv
             when: firacode_found.matched == 0
 
+      # LVIM config
       - name: configure LVIM
         block:
-          - name: Verify if the lvim is installed
+          - name: Verify if lvim is installed
             stat:
               path: '{{ ansible_user_dir }}/.config/lvim/config.lua'
-            register: lvim_existis
-          
+            register: lvim_exists
+
           - name: Install lvim
             command: bash -c "LV_BRANCH=release-1.4/neovim-0.9 bash -c '$(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.4/neovim-0.9/utils/installer/install.sh)'"
-            when: not lvim_existis.stat.exists
+            when: not lvim_exists.stat.exists
 
           - name: Get inode of the original config.lua
             stat:
