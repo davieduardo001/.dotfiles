@@ -82,32 +82,69 @@
       # install firacode
       - name: install fira code
         block:
-            - name: Find FiraCode fonts
-              find:
-                paths: '{{ ansible_user_dir }}/.local/share/fonts/'
-                patterns: 'FiraCode*'
-              register: firacode_found
+          - name: Find FiraCode fonts
+            find:
+              paths: '{{ ansible_user_dir }}/.local/share/fonts/'
+              patterns: 'FiraCode*'
+            register: firacode_found
 
-            - name: Ensure fonts directory exists
-              file:
-                path: '{{ ansible_user_dir }}/.local/share/fonts'
-                state: directory
-                mode: '0755'
+          - name: Ensure fonts directory exists
+            file:
+              path: '{{ ansible_user_dir }}/.local/share/fonts'
+              state: directory
+              mode: '0755'
 
-            - name: Download FiraCode zip
-              get_url:
-                url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip
-                dest: /tmp/FiraCode.zip
-              when: firacode_found.matched == 0
+          - name: Download FiraCode zip
+            get_url:
+              url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip
+              dest: /tmp/FiraCode.zip
+            when: firacode_found.matched == 0
 
-            - name: Unzip FiraCode fonts
-              command: unzip /tmp/FiraCode.zip -d {{ ansible_user_dir }}/.local/share/fonts/
-              when: firacode_found.matched == 0
+          - name: Unzip FiraCode fonts
+            command: unzip /tmp/FiraCode.zip -d {{ ansible_user_dir }}/.local/share/fonts/
+            when: firacode_found.matched == 0
 
-            - name: Update font cache
-              command: fc-cache -fv
-              when: firacode_found.matched == 0
+          - name: Update font cache
+            command: fc-cache -fv
+            when: firacode_found.matched == 0
 
       - name: configure LVIM
         block:
-          - name: installing dependecies
+          - name: Verify if the lvim is installed
+            stat:
+              path: '{{ ansible_user_dir }}/.config/lvim/config.lua'
+            register: lvim_existis
+          
+          - name: Install lvim
+            command: bash -c "LV_BRANCH=release-1.4/neovim-0.9 bash -c '$(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.4/neovim-0.9/utils/installer/install.sh)'"
+            when: not lvim_existis.stat.exists
+
+          - name: Get inode of the original config.lua
+            stat:
+              path: '{{ ansible_user_dir }}/.dotfiles/dotfiles/lvim/config.lua'
+            register: original_file
+
+          - name: Get inode of the target config.lua
+            stat:
+              path: '{{ ansible_user_dir }}/.config/lvim/config.lua'
+            register: target_file
+            ignore_errors: true
+
+          - name: Check if backup of config.lua exists
+            stat:
+              path: '{{ ansible_user_dir }}/.dotfiles/lvim/config.lua.backup'
+            register: backup_file
+
+          - name: Remove the backup of config.lua if it exists
+            file:
+              path: '{{ ansible_user_dir }}/.dotfiles/lvim/config.lua.backup'
+              state: absent
+            when: backup_file.stat.exists
+
+          - name: Make the backup of the old config
+            shell: mv '{{ ansible_user_dir }}/.dotfiles/lvim/config.lua' '{{ ansible_user_dir }}/.dotfiles/lvim/config.lua.backup'
+            when: target_file.stat.exists is defined and target_file.stat.inode != original_file.stat.inode
+
+          - name: Create hard link for config.lua if it does not exist or is not a hard link
+            command: ln '{{ ansible_user_dir }}/.dotfiles/dotfiles/lvim/config.lua' '{{ ansible_user_dir }}/.config/lvim/config.lua'
+            when: target_file.stat.exists is not defined or target_file.stat.inode != original_file.stat.inode
