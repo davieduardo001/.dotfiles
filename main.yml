@@ -80,6 +80,9 @@
       # config shell
       - name: Config fish
         block:
+          - name: set themes
+            command:  fish -lc "omf install fishface && omf theme fishface"
+
           - name: Set up dotfiles
             lineinfile:
               path: ~/.config/fish/config.fish
