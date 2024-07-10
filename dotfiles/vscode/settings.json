@@ -16,6 +16,7 @@
     "window.commandCenter": false,
     "workbench.layoutControl.enabled": false,
     "window.zoomLevel": 1,
+    "workbench.sideBar.location": "right",
 
     "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
     "terminal.integrated.fontSize": 14,
