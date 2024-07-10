@@ -1,8 +1,8 @@
 {
     "editor.fontLigatures": true,
-    "editor.fontFamily": "FiraCode Nerd Font",
+    "editor.fontFamily": "JetBrainsMono Nerd Font",
     "files.autoSave": "afterDelay",
-    "editor.fontSize": 12,
+    "editor.fontSize": 14,
     "editor.lineHeight": 1.8,
     "workbench.startupEditor": "newUntitledFile",
     "editor.renderLineHighlight": "gutter",
@@ -13,15 +13,16 @@
     "breadcrumbs.enabled": false,
     "editor.minimap.enabled": false,
     "editor.scrollbar.horizontal": "hidden",
-    "editor.scrollbar.vertical": "hidden",
     "window.commandCenter": false,
     "workbench.layoutControl.enabled": false,
+    "window.zoomLevel": 1,
 
-    "terminal.integrated.fontFamily": "FiraCode Nerd Font",
-    "terminal.integrated.fontSize": 12,
-    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.defaultProfile.linux": "fish",
     "workbench.panel.defaultLocation": "right",
-    
-    "workbench.iconTheme": "material-icon-theme",
-    "workbench.colorTheme": "Dracula"
+
+    "symbols.hidesExplorerArrows": true,
+    "workbench.iconTheme": "symbols",
+    "workbench.colorTheme": "Sweet Dracula"
 }

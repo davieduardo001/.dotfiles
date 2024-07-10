@@ -14,12 +14,13 @@
             loop:
               - lf
               - base-devel
+              - subversion
               - curl
               - kitty
               - syncthing
-              - python-pip
               - fish
               - vim
+              - vscode
       
       # install JetBrainsMono
       - name: install JetBrainsMono
@@ -51,17 +52,56 @@
             when: font_found.matched == 0
 
       # config kitty
-      - name: Config the terminal
+      - name: config terminal emulator
         block:
-          - name: create or cleanup the kitty file
-            file: 
-              path: '{{ ansible_user_dir }}/.config/kitty'
+          - name: Remove existing kitty file
+            file:
+              path: '{{ ansible_env.HOME }}/.config/kitty'
+              state: absent
+            ignore_errors: yes
+
+          - name: Create or ensure the kitty directory exists
+            file:
+              path: '{{ ansible_env.HOME }}/.config/kitty'
               state: directory
-          
-          - name: create the link to the config file
+
+          - name: Create symbolic link to kitty.conf
             command: >
-              ln '{{ ansible_user_dir }}/.dotfiles/dotfiles/kitty/kitty.conf' '{{ ansible_user_dir }}/.config/kitty/kitty.conf'
-          
-          - name: create the link to the theme file
+              ln -sf '{{ ansible_env.HOME }}/.dotfiles/dotfiles/kitty/kitty.conf' '{{ ansible_env.HOME }}/.config/kitty/kitty.conf'
+            args:
+              creates: '{{ ansible_env.HOME }}/.config/kitty/kitty.conf'
+
+          - name: Create symbolic link to theme.conf
             command: >
-              ln '{{ ansible_user_dir }}/.dotfiles/dotfiles/kitty/theme.conf' '{{ ansible_user_dir }}/.config/kitty/theme.conf'
+              ln -sf '{{ ansible_env.HOME }}/.dotfiles/dotfiles/kitty/theme.conf' '{{ ansible_env.HOME }}/.config/kitty/theme.conf'
+            args:
+              creates: '{{ ansible_env.HOME }}/.config/kitty/theme.conf'
+      
+      # config shell
+      - name: Config fish
+        block:
+          - name: Set up dotfiles
+            lineinfile:
+              path: ~/.config/fish/config.fish
+              line: 'alias dotfiles="~/.dotfiles/bin/dotfiles"'
+              create: yes
+      
+      # config vscode
+      - name: Config vscode
+        block:
+          - name: install extensions
+            command: >
+              code --install-extension PROxZIMA.SweetDracula &&
+              code --install-extension wilfriedago.vscode-Symbols-Icon-Theme && 
+              code --install-extension redhat.vscode-yaml
+            ignore_errors: yes
+          
+          - name: remove the settings file
+            file:
+              path: ~/.config/Code\ -\ OSS/User/settings.json
+              state: absent
+            ignore_errors: yes
+          
+          - name: make the hard link to the config
+            command: >
+              ln -f ~/.dotfiles/dotfiles/vscode/settings.json ~/.config/Code\ -\ OSS/User/settings.json            

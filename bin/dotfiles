@@ -15,6 +15,15 @@ if ! [[ -x "$(command -v git)" ]]; then
   sudo pacman -S git --noconfirm
 fi
 
+# Fish
+if ! [[ -x "$(command -v fish)" ]]; then
+  sudo pacman -S fish
+
+  chsh -s `which fish`
+
+  curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish
+fi
+
 # SSH
 if ! [[ -f "$SSH_DIR/id_rsa" ]]; then
   mkdir -p "$SSH_DIR"
@@ -26,17 +35,6 @@ if ! [[ -f "$SSH_DIR/id_rsa" ]]; then
   cat "$SSH_DIR/id_rsa.pub" >> "$SSH_DIR/authorized_keys"
 
   chmod 600 "$SSH_DIR/authorized_keys"
-fi
-
-# install yay on YAY
-if ! [[ -x "$(command -v yay)" ]]; then
-  echo 'installing yay..'  
-  
-  git clone https://aur.archlinux.org/yay.git "$HOME/yay"
-
-  cd /tmp/yay | makepkg -si
-
-  rm -rf "$HOME/yay"
 fi
 
 # Run the PLAYBOOK
