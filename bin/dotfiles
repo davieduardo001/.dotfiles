@@ -28,15 +28,6 @@ if ! [[ -f "$SSH_DIR/id_rsa" ]]; then
   chmod 600 "$SSH_DIR/authorized_keys"
 fi
 
-# install yay on ANSIBLE
-if ! [[ -f "$DOTFILES_DIR/library/yay" ]]; then
-  echo "Cloning ansible-yay repository..."
-
-  git clone https://github.com/mnussbaum/ansible-yay.git "$DOTFILES_DIR/library/ansible-yay"
-  mv "$DOTFILES_DIR/library/ansible-yay/yay" "$DOTFILES_DIR/library/"
-  rm -rf "$DOTFILES_DIR/library/ansible-yay"
-fi
-
 # install yay on YAY
 if ! [[ -x "$(command -v yay)" ]]; then
   echo 'installing yay..'  
@@ -48,14 +39,5 @@ if ! [[ -x "$(command -v yay)" ]]; then
   rm -rf "$HOME/yay"
 fi
 
-# Install the REQUIREMENTS
-if [[ -f "$DOTFILES_DIR/requirements.yml" ]]; then
-  cd "$DOTFILES_DIR"
-
-  ansible-galaxy install -r requirements.yml
-fi
-
 # Run the PLAYBOOK
-cd "$DOTFILES_DIR"
-
 ansible-playbook --diff "$DOTFILES_DIR/main.yml"

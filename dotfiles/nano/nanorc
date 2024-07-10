@@ -1,0 +1,37 @@
+set linenumbers
+set softwrap
+set tabsize 2
+set autoindent
+set constantshow
+set nohelp
+set casesensitive
+set mouse
+include "/usr/share/nano/*.nanorc"
+
+# Dracula theme for Nano
+
+syntax "dracula" ".*"
+
+# Basic colors
+color brightwhite "^.*$"
+color black " "
+
+# Comments
+color brightyellow "#.*"
+
+# Keywords
+color brightmagenta "\<(if|else|while|for|return|function)\>"
+color brightcyan "\<(int|float|char|double|struct)\>"
+
+# StrinPgs
+color brightgreen "\"[^\"]*\""
+color brightgreen "'[^']*'"
+
+# Numbers
+color brightyellow "\<[0-9]+\>"
+
+# Functions
+color brightblue "\<[a-zA-Z_][a-zA-Z0-9_]*\s*\("
+
+# Special characters
+color brightred "\<([{}()\[\]])\>"
