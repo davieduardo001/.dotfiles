@@ -18,11 +18,9 @@
               - curl
               - kitty
               - syncthing
-              - fish
               - vim
               - vscode
               - less
-            become: yes
       
       # install JetBrainsMono
       - name: install JetBrainsMono
@@ -80,14 +78,11 @@
               creates: '{{ ansible_env.HOME }}/.config/kitty/theme.conf'
       
       # config shell
-      - name: Config fish
+      - name: Config bash
         block:
-          - name: set themes
-            command:  fish -lc "omf install fishface && omf theme fishface"
-
           - name: Set up dotfiles
             lineinfile:
-              path: ~/.config/fish/config.fish
+              path: ~/.bashrc
               line: 'alias dotfiles="~/.dotfiles/bin/dotfiles"'
               create: yes
                         
@@ -106,40 +101,19 @@
       # config vscode
       - name: Config vscode
         block:
-          - name: install extensions
+          - name: Install extensions
             command: >
               code --install-extension PROxZIMA.SweetDracula &&
               code --install-extension wilfriedago.vscode-Symbols-Icon-Theme && 
               code --install-extension redhat.vscode-yaml
             ignore_errors: yes
           
-          - name: remove the settings file
+          - name: Remove the settings file
             file:
               path: ~/.config/Code\ -\ OSS/User/settings.json
               state: absent
             ignore_errors: yes
           
-          - name: make the hard link to the config
+          - name: Make the hard link to the config
             command: >
               ln -f ~/.dotfiles/dotfiles/vscode/settings.json ~/.config/Code\ -\ OSS/User/settings.json
-
-      # config vscode
-      - name: Config java
-        block:
-          - name: install java
-            command: >
-              sdk install java 11.0.11.hs-adpt &&
-              sdk install && 
-              code --install-extension redhat.vscode-yaml
-            ignore_errors: yes
-          
-          - name: remove the settings file
-            file:
-              path: ~/.config/Code\ -\ OSS/User/settings.json
-              state: absent
-            ignore_errors: yes
-          
-          - name: make the hard link to the config
-            command: >
-              ln -f ~/.dotfiles/dotfiles/vscode/settings.json ~/.config/Code\ -\ OSS/User/settings.json
-          
