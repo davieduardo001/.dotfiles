@@ -35,7 +35,15 @@ if ! [[ -e "$HOME/.oh-my-bash" ]]; then
   bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
 else
   echo -e "${GREEN}is already installed${NC}"
-  echo
+fi
+
+# ZIP
+echo -e "\n${YELLOW}Verify if ZIP is installed"
+if ! [[ $(command -v zip) ]]; then
+  echo -e "${RED}not installed.. Installing...\n${NC}"
+  sudo pacman -S zip --noconfirm
+else
+  echo -e "${GREEN}is already installed${NC}"
 fi
 
 # Nvm
@@ -47,19 +55,27 @@ else
   echo -e "${GREEN}is already installed\n${NC}"
 fi
 
+# JAVA
+echo -e "\n${YELLOW}Verify if the JAVA is installed"
+if ! [[ -e "$HOME/.sdkman" ]]; then
+  echo -e "${RED}not installed.. Installing...\n${NC}"
+
+  curl -s "https://get.sdkman.io" | bash
+  source "$HOME/.sdkman/bin/sdkman-init.sh"
+else
+  echo -e "${GREEN}is already installed${NC}"
+fi
+
 # SSH
 echo -e "\n${YELLOW}Verify if the ssh key was genereted"
 if ! [[ -e "$SSH_DIR/id_rsa" ]]; then
   echo -e "${RED}not generated.. generating...\n${NC}"
 
   mkdir -p "$SSH_DIR"
-
   chmod 700 "$SSH_DIR"
-
   ssh-keygen -b 4096 -t rsa -f "$SSH_DIR/id_rsa" -N "" -C "$USER@HOSTNAME"
 
   cat "$SSH_DIR/id_rsa.pub" >> "$SSH_DIR/authorized_keys"
-
   chmod 600 "$SSH_DIR/authorized_keys"
 else
   echo -e "${GREEN}was already generated\n${NC}"
