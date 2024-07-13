@@ -88,6 +88,19 @@
               path: ~/.config/fish/config.fish
               line: 'alias dotfiles="~/.dotfiles/bin/dotfiles"'
               create: yes
+                        
+          - name: Set up nvm
+            lineinfile:
+              path: ~/.bashrc
+              line: 'export NVM_DIR="$HOME/.nvm"'
+              create: yes
+              
+          - name: Loads up nvm
+            lineinfile:
+              path: ~/.bashrc
+              line: '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' # This loads nvm
+              create: yes
+          
       
       # config vscode
       - name: Config vscode

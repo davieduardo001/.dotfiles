@@ -4,28 +4,54 @@ set -e # exit in a error
 
 SSH_DIR="$HOME/.ssh"
 DOTFILES_DIR="$HOME/.dotfiles"
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+MAGENTA='\033[0;35m'
+NC='\033[0m' # No Color
 
 # ANSIBLE
-if ! [ -x "$(command -v ansible)" ]; then
+echo -e "${YELLOW}Verify if ANSIBLE is installed${NC}"
+if ! [ "$(command -v ansible)" ]; then
+  echo -e "${RED}not installed.. Installing...\n${NC}"
   sudo pacman -S ansible --noconfirm
+else
+  echo -e "${GREEN}is already installed${NC}"
 fi
 
 # GIT
-if ! [[ -x "$(command -v git)" ]]; then
+echo -e "\n${YELLOW}Verify if GIT is installed"
+if ! [[ "$(command -v git)" ]]; then
+  echo -e "${RED}not installed.. Installing...\n${NC}"
   sudo pacman -S git --noconfirm
+else
+  echo -e "${GREEN}is already installed${NC}"
 fi
 
-# Fish
-if ! [[ -x "$(command -v fish)" ]]; then
-  sudo pacman -S fish
+# Bash
+echo -e "\n${YELLOW}Verify if OH-MY-BASH is installed"
+if ! [[ -e "$HOME/.oh-my-bash" ]]; then
+  echo -e "${RED}not installed.. Installing...\n${NC}"
+  bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+else
+  echo -e "${GREEN}is already installed${NC}"
+  echo
+fi
 
-  chsh -s `which fish`
-
-  curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish
+# Nvm
+echo -e "\n${YELLOW}Verify if NVM is installed"
+if ! [[ -x "$HOME/.nvm" ]]; then
+  echo -e "${RED}not installed.. Installing...\n${NC}"
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+else
+  echo -e "${GREEN}is already installed\n${NC}"
 fi
 
 # SSH
-if ! [[ -f "$SSH_DIR/id_rsa" ]]; then
+echo -e "\n${YELLOW}Verify if the ssh key was genereted"
+if ! [[ -e "$SSH_DIR/id_rsa" ]]; then
+  echo -e "${RED}not generated.. generating...\n${NC}"
+
   mkdir -p "$SSH_DIR"
 
   chmod 700 "$SSH_DIR"
@@ -35,7 +61,10 @@ if ! [[ -f "$SSH_DIR/id_rsa" ]]; then
   cat "$SSH_DIR/id_rsa.pub" >> "$SSH_DIR/authorized_keys"
 
   chmod 600 "$SSH_DIR/authorized_keys"
+else
+  echo -e "${GREEN}was already generated\n${NC}"
 fi
 
 # Run the PLAYBOOK
+echo -e "${MAJENTA}INIT PLAYBOOK\n${NC}"
 ansible-playbook --diff "$DOTFILES_DIR/main.yml"
