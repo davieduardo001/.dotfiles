@@ -62,13 +62,3 @@ if (-not (Get-Command "code-oss" -ErrorAction SilentlyContinue)) {
 } else {
     Write-Color "Code - OSS is already installed" $GREEN
 }
-
-# Install Oh-My-Posh for PowerShell
-Write-Color "Installing Oh-My-Posh for PowerShell..." $YELLOW
-if (-not (Get-Command "oh-my-posh" -ErrorAction SilentlyContinue)) {
-    Install-Module oh-my-posh -Scope CurrentUser -Force
-    Import-Module oh-my-posh
-    Set-PoshPrompt -Theme Paradox
-} else {
-    Write-Color "Oh-My-Posh is already installed" $GREEN
-}
