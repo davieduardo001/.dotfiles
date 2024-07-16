@@ -15,11 +15,9 @@
         name: "{{ item }}"
         state: present
       loop:
-        - lf
         - curl
         - syncthing
         - vim
-        - less
       become: yes
 
     # config shell
