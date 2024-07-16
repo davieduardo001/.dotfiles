@@ -84,6 +84,13 @@
     # config shell
     - name: Config bash
       block:
+        - name: Set up bash theme
+          lineinfile:
+            path: ~/.bashrc
+            regexp: '^OSH_THEME='
+            line: 'OSH_THEME="clean"'
+            state: present
+
         - name: Set up dotfiles alias
           lineinfile:
             path: ~/.bashrc

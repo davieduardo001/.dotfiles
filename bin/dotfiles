@@ -167,6 +167,84 @@ install_windows() {
   echo -e "${YELLOW}For Windows installation, please run the PowerShell script 'install.ps1'.${NC}"
 }
 
+
+install_wsl() {
+  echo -e "${YELLOW}Installing on WSL...${NC}"
+
+  # ANSIBLE
+  echo -e "${YELLOW}Verify if ANSIBLE is installed${NC}"
+  if ! [ "$(command -v ansible)" ]; then
+    echo -e "${RED}not installed.. Installing...\n${NC}"
+    sudo apt update
+    sudo apt install -y ansible
+  else
+    echo -e "${GREEN}is already installed${NC}"
+  fi
+
+  # GIT
+  echo -e "\n${YELLOW}Verify if GIT is installed${NC}"
+  if ! [ "$(command -v git)" ]; then
+    echo -e "${RED}not installed.. Installing...\n${NC}"
+    sudo apt install -y git
+  else
+    echo -e "${GREEN}is already installed${NC}"
+  fi
+
+  # Bash
+  echo -e "\n${YELLOW}Verify if OH-MY-BASH is installed${NC}"
+  if ! [ -e "$HOME/.oh-my-bash" ]; then
+    echo -e "${RED}not installed.. Installing...\n${NC}"
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+  else
+    echo -e "${GREEN}is already installed${NC}"
+  fi
+
+  # ZIP
+  echo -e "\n${YELLOW}Verify if ZIP is installed${NC}"
+  if ! [ "$(command -v zip)" ]; then
+    echo -e "${RED}not installed.. Installing...\n${NC}"
+    sudo apt install -y zip
+  else
+    echo -e "${GREEN}is already installed${NC}"
+  fi
+
+  # Nvm
+  echo -e "\n${YELLOW}Verify if NVM is installed${NC}"
+  if ! [ -x "$HOME/.nvm" ]; then
+    echo -e "${RED}not installed.. Installing...\n${NC}"
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+  else
+    echo -e "${GREEN}is already installed\n${NC}"
+  fi
+
+  # JAVA
+  echo -e "\n${YELLOW}Verify if the JAVA is installed${NC}"
+  if ! [ -e "$HOME/.sdkman" ]; then
+    echo -e "${RED}not installed.. Installing...\n${NC}"
+    curl -s "https://get.sdkman.io" | bash
+    source "$HOME/.sdkman/bin/sdkman-init.sh"
+  else
+    echo -e "${GREEN}is already installed${NC}"
+  fi
+
+  # SSH
+  echo -e "\n${YELLOW}Verify if the ssh key was generated${NC}"
+  if ! [ -e "$SSH_DIR/id_rsa" ]; then
+    echo -e "${RED}not generated.. generating...\n${NC}"
+    mkdir -p "$SSH_DIR"
+    chmod 700 "$SSH_DIR"
+    ssh-keygen -b 4096 -t rsa -f "$SSH_DIR/id_rsa" -N "" -C "$USER@HOSTNAME"
+    cat "$SSH_DIR/id_rsa.pub" >> "$SSH_DIR/authorized_keys"
+    chmod 600 "$SSH_DIR/authorized_keys"
+  else
+    echo -e "${GREEN}was already generated\n${NC}"
+  fi
+
+  # Run the PLAYBOOK
+  echo -e "${MAGENTA}INIT PLAYBOOK\n${NC}"
+  ansible-playbook --diff "$DOTFILES_DIR/wsl.yml"
+}
+
 # Default option is Arch Linux
 default_option="3"
 
@@ -174,8 +252,9 @@ echo "Select the installation environment:"
 echo "1) Windows"
 echo "2) Ubuntu"
 echo "3) Arch Linux (default)"
+echo "4) WSL"
 
-read -p "Enter your choice [1-3]: " choice
+read -p "Enter your choice [1-4]: " choice
 
 # If no choice is made, default to Arch Linux
 if [ -z "$choice" ]; then
@@ -191,6 +270,9 @@ case $choice in
     ;;
   3)
     install_arch
+    ;;
+  4)
+    install_wsl
     ;;
   *)
     echo -e "${RED}Invalid option. Defaulting to Arch Linux.${NC}"
