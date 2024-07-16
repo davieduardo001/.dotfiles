@@ -55,10 +55,10 @@ if (-not (Get-Command "choco" -ErrorAction SilentlyContinue)) {
     Write-Color "Chocolatey is already installed" $GREEN
 }
 
-# Install Code - OSS using winget
-Write-Color "Installing Code - OSS using winget..." $YELLOW
-if (-not (Get-Command "code-oss" -ErrorAction SilentlyContinue)) {
-    winget install --id Microsoft.CodeOSS -e
+# Install Visual Studio Code using winget
+Write-Color "Installing Visual Studio Code using winget..." $YELLOW
+if (-not (Get-Command "code" -ErrorAction SilentlyContinue)) {
+    winget install --id Microsoft.VisualStudioCode -e
 } else {
-    Write-Color "Code - OSS is already installed" $GREEN
+    Write-Color "Visual Studio Code is already installed" $GREEN
 }
