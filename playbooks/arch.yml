@@ -20,7 +20,6 @@
               - vim
               - vscode
               - less
-            become: yes
 
       # install JetBrainsMono
       - name: install JetBrainsMono
@@ -110,16 +109,16 @@
         block:
           - name: Install extensions
             command: >
-              code --install-extension PROxZIMA.SweetDracula &&
-              code --install-extension wilfriedago.vscode-Symbols-Icon-Theme && 
-              code --install-extension redhat.vscode-yaml
-            ignore_errors: yes
+              code --install-extension arcticicestudio.nord &&
+              code --install-extension wilfriedago.vscode-Symbols-Icon-Theme
+
+            ignore_errors: true
           
           - name: Remove the settings file
             file:
               path: ~/.config/Code\ -\ OSS/User/settings.json
               state: absent
-            ignore_errors: yes
+            ignore_errors: true
           
           - name: Make the hard link to the config
             command: >
