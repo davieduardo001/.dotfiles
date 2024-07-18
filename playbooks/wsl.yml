@@ -1,0 +1,49 @@
+---
+- name: Prepare the workstation
+  hosts: localhost
+  connection: local
+
+  tasks:
+    # INSTALL APT APPS
+    - name: Update apt repository cache
+      apt:
+        update_cache: yes
+      become: true
+
+    - name: Installing with apt
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - curl
+        - syncthing
+        - vim
+      become: true
+
+    # config shell
+    - name: Config bash
+      block:
+        - name: Set up dotfiles alias
+          lineinfile:
+            path: ~/.bashrc
+            regexp: '^OSH_THEME='
+            line: 'OSH_THEME="clean"'
+            state: present
+
+        - name: Set up dotfiles alias
+          lineinfile:
+            path: ~/.bashrc
+            line: 'alias dotfiles="~/.dotfiles/bin/dotfiles"'
+            create: yes
+                      
+        - name: Set up nvm
+          lineinfile:
+            path: ~/.bashrc
+            line: 'export NVM_DIR="$HOME/.nvm"'
+            create: yes
+
+        - name: Load up nvm
+          lineinfile:
+            path: ~/.bashrc
+            line: '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' # This loads nvm
+            create: yes

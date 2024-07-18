@@ -15,6 +15,12 @@ sudo apt update
 sudo apt install openssh-server git
 ```
 
+## how to run with python
+
+**runing the python install**
+*use venv*: `source venv/vin/activate`
+*remove venv*: `deactivate`
+
 ### 2. Torná-lo executável:
 
 Após clonar ou baixar seus dotfiles, certifique-se de que o arquivo `dotfiles` seja executável:
