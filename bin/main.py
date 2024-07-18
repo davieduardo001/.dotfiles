@@ -3,6 +3,8 @@ import utils.prompts as p
 import utils.arch_install as arch
 
 def main():
+    p.clear_screen()
+
     print(f'\n{colors.YELLOW}STARTING THE CONFIG FILE{colors.RESET}\n')
     
     installation_option = p.show_menu()
@@ -18,11 +20,11 @@ def main():
 
     elif installation_option == '3':
         p.clear_screen()
-        print(f'{colors.RED}WSL installation{colors.RESET}\n')
+        print(f'{colors.CYAN}WSL installation{colors.RESET}\n')
     
     elif installation_option == '4':
         p.clear_screen()
-        print(f'{colors.RED}U\'ll need to run the win instalation with the powershell exec{colors.RESET}\n\nMore instructions on the README win installation session\n')
+        print(f'{colors.RED}U\'ll need to run the win instalation with the powershell exec{colors.RESET}\n\n{colors.CYAN}More instructions on the README win installation session\n')
     else:
         p.clear_screen()
         print(f'{colors.RED}Option did\'t found!{colors.RESET}\n')
