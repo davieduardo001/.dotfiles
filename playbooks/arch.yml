@@ -109,8 +109,8 @@
         block:
           - name: Install extensions
             command: >
-              code --install-extension arcticicestudio.nord &&
-              code --install-extension wilfriedago.vscode-Symbols-Icon-Theme
+              code --install-extension arcticicestudio.nord-visual-studio-code --install-extension vscode-icons-team.vscode-icons
+
 
             ignore_errors: true
           

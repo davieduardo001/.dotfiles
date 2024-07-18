@@ -9,7 +9,7 @@ def main():
 
     if installation_option == '1':
         p.clear_screen()
-        print(f'{colors.CYAN}Arch instalation{colors.RESET}\n')
+        print(f'{colors.CYAN}* Arch instalation ***************{colors.RESET}\n')
         arch.install_sdkman()
 
     elif installation_option == '2':
