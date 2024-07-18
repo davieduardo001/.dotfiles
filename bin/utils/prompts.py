@@ -6,7 +6,6 @@ def show_menu():
     print('2. Ubuntu')
     print('3. WSL')
     print('4. Windows')
-    print('5. exit')
 
     return input('Select a option above: ')
 
