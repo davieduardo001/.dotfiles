@@ -89,7 +89,7 @@
           - name: Set up dotfiles
             lineinfile:
               path: ~/.bashrc
-              line: 'alias dotfiles="~/.dotfiles/bin/dotfiles"'
+              line: 'alias dotfiles="python ~/.dotfiles/bin/main.py"'
               create: yes
                         
           - name: Set up nvm
