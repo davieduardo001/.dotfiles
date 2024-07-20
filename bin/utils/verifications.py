@@ -118,11 +118,18 @@ def install_ansible(iso):
     else:
         print(f'{colors.RED}* ansible is not installed. Installing...{colors.RESET}\n')
         if iso == 'arch':
-            os.system('sudo pacman -S ansible')
+            os.system('sudo pacman -S ansible --noconfirm')
         elif iso == 'ubuntu' or iso == 'wsl':
-            os.system('sudo apt install ansible')
+            os.system('sudo apt install ansible -y')
         print(f'{colors.GREEN}* ansible installed{colors.RESET}\n')
 
+def update_system(iso):
+    print(f'{colors.YELLOW}* upgrading system!{colors.RESET}\n')
+    if iso == 'arch':
+        os.system('sudo pacman -Syuu --noconfirm')
+    elif iso == 'ubuntu' or iso == 'wsl':
+        os.system('sudo apt update -y && sudo apt upgrade -y')
+    print(f'{colors.GREEN}* system upgraded!\n{colors.RESET}')
 
 # run the playbook
 def run_playbook(iso):
