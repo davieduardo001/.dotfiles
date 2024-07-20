@@ -1,8 +1,6 @@
-# Meus dotfiles
+## Meus dotfiles
 
-## Primeira Instalação
-
-### 1. Instalação das dependências caso esteja executando em uma instalação limpa:
+### 1. Instalação das Dependências Iniciais:
 
 Certifique-se de instalar as seguintes dependências se estiver executando em uma instalação limpa:
 
@@ -15,97 +13,115 @@ sudo apt update
 sudo apt install openssh-server git
 ```
 
-## how to run with python
+Para Arch Linux:
+```bash
+sudo pacman -Syu openssh git
+```
 
-**runing the python install**
-*use venv*: `source venv/vin/activate`
-*remove venv*: `deactivate`
+Para Windows e WSL:
+Antes de prosseguir com a configuração, execute o **seguinte comando no PowerShell** (como administrador) para instalar as dependências iniciais (no path que instalou o .dotfiles):
+```powershell
+.\bin\winrc.ps1
+```
+Este script prepara o ambiente com as dependências necessárias no Windows. Após a instalação, execute o comando novamente e selecione a opção de instalação no WSL para configurar o ambiente de desenvolvimento no Windows Subsystem for Linux (WSL) para uso posterior.
 
-### 2. Torná-lo executável:
+### 2. Configuração do Ambiente Python
 
-Após clonar ou baixar seus dotfiles, certifique-se de que o arquivo `dotfiles` seja executável:
+#### Criando e Ativando um Ambiente Virtual Python:
+
+Para isolar dependências e configurações Python:
 
 ```bash
-chmod 755 ~/.dotfiles/bin/dotfiles
+python3 -m venv venv
+```
+
+Para ativar o ambiente virtual:
+
+```bash
+source venv/bin/activate
+```
+
+Para desativar o ambiente virtual:
+
+```bash
+deactivate
 ```
 
 ---
 
-## Utilizção do SDK
+## Utilização do SDKMAN! (para Java)
 
-Claro, aqui está um exemplo de README em português para guiar os usuários sobre como usar o SDKMAN! para gerenciar SDKs:
+Aqui está um exemplo de como usar o SDKMAN! para gerenciar SDKs Java:
 
 ---
 
-# Usando o SDKMAN! para Gerenciar SDKs
+# Usando o SDKMAN! para Gerenciar SDKs Java
 
-O SDKMAN! é uma ferramenta para gerenciar múltiplos Kits de Desenvolvimento de Software (SDKs) em sistemas baseados em Unix. Ele simplifica a instalação, atualização e troca entre diferentes versões de SDKs como Java, Maven, Gradle, e outros.
+O SDKMAN! é uma ferramenta para gerenciar múltiplas versões do SDK Java em sistemas Unix. Ele facilita a instalação, atualização e troca entre diferentes versões do Java Development Kit (JDK).
 
-## Instalação
+## Instalação no Ubuntu, Arch Linux e WSL
 
-Para instalar o SDKMAN!, siga os seguintes passos:
+Para instalar o SDKMAN!, siga estes passos:
 
-1. **Instale o SDKMAN!**:
+1. **Instalação do SDKMAN!**:
 
-   Abra seu terminal e execute o seguinte comando:
+   No terminal, execute o seguinte comando:
 
    ```sh
    curl -s "https://get.sdkman.io" | bash
    ```
 
-   Este comando faz o download e instala o SDKMAN!.
+   Este comando realiza o download e instalação do SDKMAN!.
 
-2. **Inicialize o SDKMAN!**:
+2. **Inicialização do SDKMAN!**:
 
-   Após a instalação ser concluída, inicialize o SDKMAN! com o seguinte comando:
+   Após a instalação, inicialize o SDKMAN! com o comando:
 
    ```sh
    source "$HOME/.sdkman/bin/sdkman-init.sh"
    ```
 
-   Este comando configura as variáveis de ambiente do SDKMAN! na sua sessão atual do terminal.
+   Este comando configura as variáveis de ambiente do SDKMAN! na sessão atual do terminal.
 
-3. **Verifique a Instalação**:
+3. **Verificação da Instalação**:
 
-   Para verificar se o SDKMAN! foi instalado corretamente, você pode verificar a versão:
+   Para verificar se o SDKMAN! foi instalado corretamente, execute o comando:
 
    ```sh
    sdk version
    ```
 
-## Usando o SDKMAN!
+## Utilizando o SDKMAN! para Java
 
-### Instalando SDKs
+### Instalando um JDK Específico
 
-Para instalar um SDK específico, use o comando `sdk install` seguido do nome e versão do SDK. Por exemplo, para instalar o Java:
+Para instalar uma versão específica do JDK, utilize o comando `sdk install` seguido do nome e versão do JDK. Por exemplo:
 
 ```sh
 sdk install java 11.0.11.hs-adpt
 ```
 
-Substitua `java` por `maven`, `gradle`, ou qualquer outro SDK suportado pelo SDKMAN!.
+Substitua `java` por `maven`, `gradle`, ou outro SDK suportado pelo SDKMAN!.
 
-É recomendável preferir versões que usem o HotSpot da OpenJDK, indicado pelo sufixo `hs-adpt`, como `11.0.11.hs-adpt`, por serem baseadas em uma implementação estável e amplamente utilizada do Java Virtual Machine (JVM).
+### Alternando entre Versões de JDK
 
-### Alternando entre Versões de SDK
-
-Você pode alternar entre diferentes versões dos SDKs instalados usando o comando `sdk use`. Por exemplo, para usar o Java na versão 11:
+Você pode alternar entre diferentes versões do JDK usando o comando `sdk use`. Por exemplo, para usar o Java na versão 11:
 
 ```sh
 sdk use java 11.0.11.hs-adpt
 ```
 
-### Definindo uma Versão Padrão de SDK
+### Definindo uma Versão Padrão do JDK
 
-Para definir uma versão padrão para um SDK, use o comando `sdk default`. Por exemplo, para definir o Java 11 como padrão:
+Para definir uma versão padrão para o JDK, use o comando `sdk default`. Por exemplo, para definir o Java 11 como padrão:
 
 ```sh
 sdk default java 11.0.11.hs-adpt
 ```
 
-### Listando os SDKs Instalados
+### Listando JDKs Instalados
 
-Para listar todos os SDKs instalados e suas versões, use o comando `sdk list`:
+Para listar todos os JDKs instalados e suas versões, use o comando `sdk list`:
 
 ```sh
 sdk list java
@@ -121,12 +137,12 @@ Para atualizar o SDKMAN! e seu catálogo de versões disponíveis, use o comando
 sdk update
 ```
 
-### Desinstalando SDKs
+### Desinstalando um JDK
 
-Para desinstalar um SDK, use o comando `sdk uninstall` seguido do nome e versão do SDK:
+Para desinstalar um JDK, use o comando `sdk uninstall` seguido do nome e versão do JDK:
 
 ```sh
 sdk uninstall java 11
 ```
 
-Essas instruções ajudam a gerenciar diferentes versões de SDKs de forma eficiente usando o SDKMAN!. Certifique-se de verificar a disponibilidade das versões e preferir aquelas que são baseadas no HotSpot da OpenJDK (`hs-adpt`) para uma experiência de desenvolvimento estável e compatível com a maioria das aplicações Java.
+---
