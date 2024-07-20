@@ -3,6 +3,7 @@ from utils.colors import colors
 
 # install on arch
 def install_sdkman():
+    verify.update_system('arch')
     verify.install_ansible('arch')
     verify.install_sdkman()
     verify.install_git('arch')
