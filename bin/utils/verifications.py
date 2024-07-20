@@ -76,11 +76,13 @@ def is_openssh_installed():
     openssh_dir = '/usr/bin/ssh'
     return os.path.exists(openssh_dir) and os.path.isfile(openssh_dir)
 
+# check if ssh key where generated
 def is_ssh_key_gen():
     id_rsa_dir = f'{SSH_DIR}/id_rsa'
     print(id_rsa_dir)
     return os.path.exists(id_rsa_dir) and os.path.isfile(id_rsa_dir)
 
+# create ssh key
 def create_ssh_key():
     if is_ssh_key_gen():
         print(f'{colors.GREEN}**** ssg key\'s where generated{colors.RESET}\n')
@@ -103,6 +105,24 @@ def install_ssh():
         print(f'{colors.RED}* openssh is not installed. Installing...{colors.RESET}\n')
         create_ssh_key()
         print(f'{colors.GREEN}* openssh installed{colors.RESET}\n')
+
+# check ansible
+def is_ansible_installed():
+    ansible_dir = '/usr/bin/ansible'
+    return os.path.exists(ansible_dir) and os.path.exists(ansible_dir)
+
+# install ansible
+def install_ansible(iso):
+    if is_ansible_installed():
+        print(f'{colors.GREEN}* ansible installed{colors.RESET}\n')
+    else:
+        print(f'{colors.RED}* ansible is not installed. Installing...{colors.RESET}\n')
+        if iso == 'arch':
+            os.system('sudo pacman -S ansible')
+        elif iso == 'ubuntu' or iso == 'wsl':
+            os.system('sudo apt install ansible')
+        print(f'{colors.GREEN}* ansible installed{colors.RESET}\n')
+
 
 # run the playbook
 def run_playbook(iso):
