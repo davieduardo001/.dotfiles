@@ -1,5 +1,4 @@
 # PowerShell script to set up Windows with WSL2, Ubuntu, PowerShell, Chocolatey, Visual Studio Code, Code - OSS, and Oh-My-Posh
-
 $RED = "Red"
 $GREEN = "Green"
 $YELLOW = "Yellow"
@@ -25,24 +24,11 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 # Check if WSL is installed
 Write-Color "Checking if WSL is installed..." $YELLOW
 $wslInstalled = Get-WindowsOptionalFeature -Online | Where-Object { $_.FeatureName -eq "Microsoft-Windows-Subsystem-Linux" }
-if ($wslInstalled.State -eq "Enabled") {
-    Write-Color "WSL is already installed" $GREEN
-} else {
+if ($wslInstalled.State -ne "Enabled") {
     Write-Color "Installing WSL and Ubuntu..." $YELLOW
     wsl --install -d Ubuntu
-}
-
-# Install PowerShell
-Write-Color "Installing PowerShell..." $YELLOW
-if (-not (Get-Command "pwsh" -ErrorAction SilentlyContinue)) {
-    # Download and install PowerShell
-    $powershellUrl = "https://github.com/PowerShell/PowerShell/releases/download/v7.3.0/PowerShell-7.3.0-win-x64.msi"
-    $installerPath = "$env:TEMP\PowerShell-7.3.0-win-x64.msi"
-    Invoke-WebRequest -Uri $powershellUrl -OutFile $installerPath
-    Start-Process msiexec.exe -ArgumentList "/i", $installerPath, "/quiet", "/norestart" -NoNewWindow -Wait
-    Remove-Item -Path $installerPath
 } else {
-    Write-Color "PowerShell is already installed" $GREEN
+    Write-Color "WSL is already installed" $GREEN
 }
 
 # Install Chocolatey
@@ -55,10 +41,44 @@ if (-not (Get-Command "choco" -ErrorAction SilentlyContinue)) {
     Write-Color "Chocolatey is already installed" $GREEN
 }
 
-# Install Visual Studio Code using winget
-Write-Color "Installing Visual Studio Code using winget..." $YELLOW
+# Install Firefox using Chocolatey
+Write-Color "Installing Firefox..." $YELLOW
+if (-not (Get-Command "firefox" -ErrorAction SilentlyContinue)) {
+    choco install firefox -y
+} else {
+    Write-Color "Firefox is already installed" $GREEN
+}
+
+# Install Visual Studio Code using Chocolatey
+Write-Color "Installing Visual Studio Code..." $YELLOW
 if (-not (Get-Command "code" -ErrorAction SilentlyContinue)) {
-    winget install --id Microsoft.VisualStudioCode -e
+    choco install vscode -y
 } else {
     Write-Color "Visual Studio Code is already installed" $GREEN
 }
+
+# Install FiraCode font
+Write-Color "Installing FiraCode font..." $YELLOW
+$fontUrl = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip"
+$fontZip = "$env:TEMP\FiraCode.zip"
+$fontExtractPath = "$env:TEMP\FiraCode"
+
+# Download and extract the font
+Invoke-WebRequest -Uri $fontUrl -OutFile $fontZip
+Expand-Archive -Path $fontZip -DestinationPath $fontExtractPath
+
+# Install the font
+$fontFiles = Get-ChildItem -Path "$fontExtractPath\FiraCode" -Filter "*.ttf"
+foreach ($file in $fontFiles) {
+    $fontName = [System.IO.Path]::GetFileNameWithoutExtension($file.FullName)
+    Write-Color "Installing $fontName..." $YELLOW
+    $fontDestination = "$env:SystemRoot\Fonts\$fontName.ttf"
+    Copy-Item -Path $file.FullName -Destination $fontDestination -Force
+    Write-Color "$fontName installed" $GREEN
+}
+
+# Clean up extracted files
+Remove-Item -Path $fontZip -Force
+Remove-Item -Path $fontExtractPath -Recurse -Force
+
+Write-Color "Installation completed." $GREEN
