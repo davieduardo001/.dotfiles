@@ -1,6 +1,7 @@
 from utils.colors import colors
 import utils.prompts as p
 import utils.arch_install as arch
+import utils.wsl_install as wsl
 
 def main():
     p.clear_screen()
@@ -12,7 +13,7 @@ def main():
     if installation_option == '1':
         p.clear_screen()
         print(f'{colors.CYAN}* Arch instalation ***************{colors.RESET}\n')
-        arch.install_sdkman()
+        arch.install_arch()
 
     elif installation_option == '2':
         p.clear_screen()
@@ -20,7 +21,8 @@ def main():
 
     elif installation_option == '3':
         p.clear_screen()
-        print(f'{colors.CYAN}WSL installation{colors.RESET}\n')
+        print(f'{colors.CYAN}WSL installation ***************{colors.RESET}\n')
+        wsl.install_wsl()
     
     elif installation_option == '4':
         p.clear_screen()

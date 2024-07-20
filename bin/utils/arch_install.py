@@ -2,7 +2,7 @@ import utils.verifications as verify
 from utils.colors import colors
 
 # install on arch
-def install_sdkman():
+def install_arch():
     verify.update_system('arch')
     verify.install_ansible('arch')
     verify.install_sdkman()
