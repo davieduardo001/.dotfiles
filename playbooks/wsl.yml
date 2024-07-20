@@ -18,12 +18,14 @@
         - curl
         - syncthing
         - vim
+        - python-pip
+        - python3
       become: true
 
     # config shell
     - name: Config bash
       block:
-        - name: Set up dotfiles alias
+        - name: Set up theme
           lineinfile:
             path: ~/.bashrc
             regexp: '^OSH_THEME='
@@ -45,5 +47,5 @@
         - name: Load up nvm
           lineinfile:
             path: ~/.bashrc
-            line: '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' # This loads nvm
+            line: '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
             create: yes
