@@ -57,28 +57,28 @@ if (-not (Get-Command "code" -ErrorAction SilentlyContinue)) {
     Write-Color "Visual Studio Code is already installed" $GREEN
 }
 
-# Install FiraCode font
-Write-Color "Installing FiraCode font..." $YELLOW
-$fontUrl = "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip"
-$fontZip = "$env:TEMP\FiraCode.zip"
-$fontExtractPath = "$env:TEMP\FiraCode"
-
-# Download and extract the font
-Invoke-WebRequest -Uri $fontUrl -OutFile $fontZip
-Expand-Archive -Path $fontZip -DestinationPath $fontExtractPath
-
-# Install the font
-$fontFiles = Get-ChildItem -Path "$fontExtractPath\FiraCode" -Filter "*.ttf"
-foreach ($file in $fontFiles) {
-    $fontName = [System.IO.Path]::GetFileNameWithoutExtension($file.FullName)
-    Write-Color "Installing $fontName..." $YELLOW
-    $fontDestination = "$env:SystemRoot\Fonts\$fontName.ttf"
-    Copy-Item -Path $file.FullName -Destination $fontDestination -Force
-    Write-Color "$fontName installed" $GREEN
+# Install GitHub Desktop using Chocolatey
+Write-Color "Installing GitHub Desktop..." Yellow
+if (-not (Get-Command "GitHubDesktop" -ErrorAction SilentlyContinue)) {
+    choco install github-desktop -y
+} else {
+    Write-Color "GitHub Desktop is already installed" Green
 }
 
-# Clean up extracted files
-Remove-Item -Path $fontZip -Force
-Remove-Item -Path $fontExtractPath -Recurse -Force
+# Install KeePass using Chocolatey
+Write-Color "Installing KeePass..." Yellow
+if (-not (Get-Command "keepass" -ErrorAction SilentlyContinue)) {
+    choco install keepass -y
+} else {
+    Write-Color "KeePass is already installed" Green
+}
+
+# Install Syncthing using Chocolatey
+Write-Color "Installing Syncthing..." Yellow
+if (-not (Get-Command "syncthing" -ErrorAction SilentlyContinue)) {
+    choco install syncthing -y
+} else {
+    Write-Color "Syncthing is already installed" Green
+}
 
 Write-Color "Installation completed." $GREEN
