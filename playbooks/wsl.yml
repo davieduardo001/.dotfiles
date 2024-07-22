@@ -35,7 +35,7 @@
         - name: Set up dotfiles alias
           lineinfile:
             path: ~/.bashrc
-            line: 'alias dotfiles="~/.dotfiles/bin/dotfiles"'
+            line: 'alias dotfiles="python3 ~/.dotfiles/bin/main.py"'
             create: yes
                       
         - name: Set up nvm
@@ -48,4 +48,16 @@
           lineinfile:
             path: ~/.bashrc
             line: '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
+            create: yes
+
+        - name: Set up sdkman!
+          lineinfile:
+            path: ~/.bashrc
+            line: 'export SDKMAN_DIR="$HOME/.sdkman"'
+            create: yes
+
+        - name: Load sdkman!
+          lineinfile:
+            path: ~/.bashrc
+            line: '[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"'
             create: yes
