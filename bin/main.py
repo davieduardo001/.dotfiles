@@ -2,6 +2,7 @@ from utils.colors import colors
 import utils.prompts as p
 import utils.arch_install as arch
 import utils.wsl_install as wsl
+import utils.ubuntu_install as ubuntu
 
 def main():
     p.clear_screen()
@@ -18,6 +19,7 @@ def main():
     elif installation_option == '2':
         p.clear_screen()
         print(f'{colors.CYAN}Ubuntu installation{colors.RESET}\n')
+        ubuntu.install_wsl()
 
     elif installation_option == '3':
         p.clear_screen()
