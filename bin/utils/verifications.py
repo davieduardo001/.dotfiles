@@ -7,6 +7,16 @@ HOSTNAME = os.getenv('HOSTNAME')
 DOTFILES_DIR = '~/.dotfiles'
 SSH_DIR = f'/home/{USER}/.ssh'
 
+def update_system(iso):
+    print(f'{colors.YELLOW}* upgrading system!{colors.RESET}\n')
+    if iso == 'arch':
+        os.system('sudo pacman -Syuu --noconfirm')
+    elif iso == 'ubuntu' or iso == 'wsl':
+        os.system('sudo apt update -y && sudo apt upgrade -y')
+    elif iso == 'fedora':
+        os.system('sudo dnf upgrade --refresh -y')
+    print(f'{colors.GREEN}* system upgraded!\n{colors.RESET}')
+
 # check SDKMAN!
 def is_sdkman_installed():
     sdkman_dir = os.path.expanduser('~/.sdkman')
@@ -37,6 +47,8 @@ def install_git(iso):
             os.system('sudo pacman -S git --noconfirm')
         elif iso == 'ubuntu' or iso == 'wsl':
             os.system('sudo apt install git -y')
+        elif iso == 'fedora':
+            os.system('sudo dnf install git -y')
 
         print(f'{colors.GREEN}* git is already installed.{colors.RESET}\n')
 
@@ -55,6 +67,8 @@ def intall_zip(iso):
             os.system('sudo pacman -S zip --noconfirm')
         elif iso == 'ubuntu' or iso == 'wsl':
             os.system('sudo apt install zip -y')
+        elif iso == 'fedora':
+            os.system('sudo dnf install zip -y')
         print(f'{colors.GREEN}* zip installed{colors.RESET}\n')
 
 # check nvm
@@ -121,15 +135,9 @@ def install_ansible(iso):
             os.system('sudo pacman -S ansible --noconfirm')
         elif iso == 'ubuntu' or iso == 'wsl':
             os.system('sudo apt install ansible -y')
+        elif iso == 'fedora':
+            os.system('sudo dnf install ansible -y')
         print(f'{colors.GREEN}* ansible installed{colors.RESET}\n')
-
-def update_system(iso):
-    print(f'{colors.YELLOW}* upgrading system!{colors.RESET}\n')
-    if iso == 'arch':
-        os.system('sudo pacman -Syuu --noconfirm')
-    elif iso == 'ubuntu' or iso == 'wsl':
-        os.system('sudo apt update -y && sudo apt upgrade -y')
-    print(f'{colors.GREEN}* system upgraded!\n{colors.RESET}')
 
 # run the playbook
 def run_playbook(iso):
@@ -141,4 +149,7 @@ def run_playbook(iso):
         os.system(command)
     elif iso == 'wsl':
         command = f'ansible-playbook --diff {DOTFILES_DIR}/playbooks/wsl.yml'
+        os.system(command)
+    elif iso == 'fedora':
+        command = f'ansible-playbook --diff {DOTFILES_DIR}/playbooks/fedora.yml'
         os.system(command)

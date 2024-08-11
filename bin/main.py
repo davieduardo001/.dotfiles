@@ -19,14 +19,19 @@ def main():
     elif installation_option == '2':
         p.clear_screen()
         print(f'{colors.CYAN}Ubuntu installation{colors.RESET}\n')
-        ubuntu.install_wsl()
+        ubuntu.install_ubuntu()
 
     elif installation_option == '3':
         p.clear_screen()
         print(f'{colors.CYAN}WSL installation ***************{colors.RESET}\n')
         wsl.install_wsl()
-    
+
     elif installation_option == '4':
+        p.clear_screen()
+        print(f'{colors.CYAN}RedHat installation ***************{colors.RESET}\n')
+        fedora.install_fedora()
+    
+    elif installation_option == '5':
         p.clear_screen()
         print(f'{colors.RED}U\'ll need to run the win instalation with the powershell exec{colors.RESET}\n\n{colors.CYAN}More instructions on the README win installation session\n')
     else:
