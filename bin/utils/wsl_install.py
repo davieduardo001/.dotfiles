@@ -1,7 +1,7 @@
 import utils.verifications as verify
 from utils.colors import colors
 
-# install on arch
+# install on wsl/ubuntu iso
 def install_wsl():
     verify.update_system('wsl')
     verify.install_ansible('wsl')
