@@ -139,7 +139,7 @@ def install_ansible(iso):
             os.system('sudo dnf install ansible -y')
         print(f'{colors.GREEN}* ansible installed{colors.RESET}\n')
 
-# run the playbook
+# Run the playbook
 def run_playbook(iso):
     if iso == 'arch':
         command = f'ansible-playbook --diff {DOTFILES_DIR}/playbooks/arch.yml'

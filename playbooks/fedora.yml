@@ -1,0 +1,157 @@
+---
+- name: Prepare the workstation
+  hosts: localhost
+  connection: local
+
+  tasks:
+    # INSTALL DNF APPS
+    - name: Installing packages on Fedora
+      block:
+        - name: Loop for installation
+          dnf:
+            name: '{{ item }}'
+            state: present
+          loop:
+            - lf
+            - base-devel
+            - curl
+            - kitty
+            - syncthing
+            - vim
+            - less
+            - python-pip
+
+    # INSTALL VISUAL STUDIO CODE
+    - name: Install Visual Studio Code
+      block:
+        - name: Check if Visual Studio Code is installed
+          stat:
+            path: /usr/bin/code
+          register: vscode_installed
+
+        - name: Add Microsoft GPG key
+          rpm_key:
+            state: present
+            key: https://packages.microsoft.com/keys/microsoft.asc
+          when: not vscode_installed.stat.exists
+
+        - name: Add Visual Studio Code repository
+          copy:
+            content: |
+              [code]
+              name=Visual Studio Code
+              baseurl=https://packages.microsoft.com/yumrepos/vscode
+              enabled=1
+              gpgcheck=1
+              gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+            dest: /etc/yum.repos.d/vscode.repo
+            mode: '0644'
+          when: not vscode_installed.stat.exists
+
+        - name: Install Visual Studio Code
+          dnf:
+            name: code
+            state: present
+          when: not vscode_installed.stat.exists
+
+    # install JetBrainsMono
+    - name: Install JetBrainsMono
+      block:
+        - name: Find JetBrainsMono fonts
+          find:
+            paths: '{{ ansible_user_dir }}/.local/share/fonts/'
+            patterns: 'JetBrainsMono*'
+          register: font_found
+
+        - name: Ensure fonts directory exists
+          file:
+            path: '{{ ansible_user_dir }}/.local/share/fonts'
+            state: directory
+            mode: '0755'
+
+        - name: Download JetBrainsMono zip
+          get_url:
+            url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.zip
+            dest: /tmp/JetBrainsMono.zip
+          when: font_found.matched == 0
+
+        - name: Unzip JetBrainsMono fonts
+          command: unzip /tmp/JetBrainsMono.zip -d {{ ansible_user_dir }}/.local/share/fonts/
+          when: font_found.matched == 0
+
+        - name: Update font cache
+          command: fc-cache -fv
+          when: font_found.matched == 0
+
+    # config kitty
+    - name: Config terminal emulator
+      block:
+        - name: Remove existing kitty file
+          file:
+            path: '{{ ansible_env.HOME }}/.config/kitty'
+            state: absent
+          ignore_errors: yes
+
+        - name: Create or ensure the kitty directory exists
+          file:
+            path: '{{ ansible_env.HOME }}/.config/kitty'
+            state: directory
+
+        - name: Create symbolic link to kitty.conf
+          command: >
+            ln -sf '{{ ansible_env.HOME }}/.dotfiles/dotfiles/kitty/kitty.conf' '{{ ansible_env.HOME }}/.config/kitty/kitty.conf'
+          args:
+            creates: '{{ ansible_env.HOME }}/.config/kitty/kitty.conf'
+
+        - name: Create symbolic link to theme.conf
+          command: >
+            ln -sf '{{ ansible_env.HOME }}/.dotfiles/dotfiles/kitty/theme.conf' '{{ ansible_env.HOME }}/.config/kitty/theme.conf'
+          args:
+            creates: '{{ ansible_env.HOME }}/.config/kitty/theme.conf'
+
+    # config shell
+    - name: Config bash
+      block:
+        - name: Set up bash theme
+          lineinfile:
+            path: ~/.bashrc
+            regexp: '^OSH_THEME='
+            line: 'OSH_THEME="clean"'
+            state: present
+
+        - name: Set up dotfiles
+          lineinfile:
+            path: ~/.bashrc
+            line: 'alias dotfiles="python ~/.dotfiles/bin/main.py"'
+            create: yes
+
+        - name: Set up nvm
+          lineinfile:
+            path: ~/.bashrc
+            line: 'export NVM_DIR="$HOME/.nvm"'
+            create: yes
+
+        - name: Loads up nvm
+          lineinfile:
+            path: ~/.bashrc
+            line: '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' # This loads nvm
+            create: yes
+
+    # config vscode
+    - name: Config vscode
+      block:
+        - name: Install VS Code extensions
+          command: >
+            code --install-extension equinusocio.vsc-material-theme &&
+            code --install-extension wilfriedago.vscode-symbols-icon-theme
+          ignore_errors: true
+
+        - name: Remove the settings file
+          file:
+            path: ~/.config/Code/User/settings.json
+            state: absent
+          ignore_errors: true
+
+        - name: Make the hard link to the config
+          command: >
+            ln -f ~/.dotfiles/dotfiles/vscode/settings.json ~/.config/Code/User/settings.json
