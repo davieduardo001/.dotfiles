@@ -2,7 +2,7 @@
 - name: Prepare the workstation
   hosts: localhost
   connection: local
-
+  become: yes
   tasks:
     # INSTALL DNF APPS
     - name: Installing packages on Fedora
@@ -12,8 +12,6 @@
             name: '{{ item }}'
             state: present
           loop:
-            - lf
-            - base-devel
             - curl
             - kitty
             - syncthing
@@ -141,17 +139,20 @@
     - name: Config vscode
       block:
         - name: Install VS Code extensions
+          become: no
           command: >
-            code --install-extension equinusocio.vsc-material-theme &&
-            code --install-extension wilfriedago.vscode-symbols-icon-theme
+            code --install-extension miguelsolorio.symbols &&
+            code --install-extension miguelsolorio.min-theme
           ignore_errors: true
 
         - name: Remove the settings file
+          become: no
           file:
             path: ~/.config/Code/User/settings.json
             state: absent
           ignore_errors: true
 
         - name: Make the hard link to the config
+          become: no
           command: >
             ln -f ~/.dotfiles/dotfiles/vscode/settings.json ~/.config/Code/User/settings.json
