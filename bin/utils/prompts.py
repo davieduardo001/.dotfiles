@@ -5,7 +5,8 @@ def show_menu():
     print('1. Arch')
     print('2. Ubuntu')
     print('3. WSL')
-    print('4. Windows')
+    print('4. Fedora')
+    print('5. Windows')
 
     return input('Select a option above: ')
 
