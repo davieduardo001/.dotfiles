@@ -2,6 +2,7 @@
 - name: Prepare the workstation
   hosts: localhost
   connection: local
+  become: yes
 
   tasks:
     # INSTALL APT APPS
@@ -14,14 +15,13 @@
         name: "{{ item }}"
         state: present
       loop:
-        - lf
         - build-essential
         - curl
         - kitty
         - syncthing
         - vim
-        - code # Visual Studio Code
         - less
+        - keepass2
 
     # install JetBrainsMono
     - name: install JetBrainsMono
@@ -108,23 +108,4 @@
             path: ~/.bashrc
             line: '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' # This loads nvm
             create: yes
-    
-    # config vscode
-    - name: Config vscode
-      block:
-        - name: Install extensions
-          command: >
-            code --install-extension PROxZIMA.SweetDracula &&
-            code --install-extension wilfriedago.vscode-Symbols-Icon-Theme && 
-            code --install-extension redhat.vscode-yaml
-          ignore_errors: yes
-        
-        - name: Remove the settings file
-          file:
-            path: ~/.config/Code\ -\ OSS/User/settings.json
-            state: absent
-          ignore_errors: yes
-        
-        - name: Make the hard link to the config
-          command: >
-            ln -f ~/.dotfiles/dotfiles/vscode/settings.json ~/.config/Code\ -\ OSS/User/settings.json
+  

@@ -5,6 +5,7 @@ from utils.colors import colors
 def install_ubuntu():
     verify.update_system('ubuntu')
     verify.install_ansible('ubuntu')
+    verify.install_oh_my_bash()
     verify.install_sdkman()
     verify.install_git('ubuntu')
     verify.intall_zip('ubuntu')

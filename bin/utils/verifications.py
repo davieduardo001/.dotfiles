@@ -123,7 +123,7 @@ def install_ssh():
 # check ansible
 def is_ansible_installed():
     ansible_dir = '/usr/bin/ansible'
-    return os.path.exists(ansible_dir) and os.path.exists(ansible_dir)
+    return os.path.exists(ansible_dir) and os.path.isdir(ansible_dir)
 
 # install ansible
 def install_ansible(iso):
@@ -138,6 +138,19 @@ def install_ansible(iso):
         elif iso == 'fedora':
             os.system('sudo dnf install ansible -y')
         print(f'{colors.GREEN}* ansible installed{colors.RESET}\n')
+
+# Install oh my bash
+def is_oh_my_bash_installed():
+    ohmybash_dir = '~/.oh-my-bash'
+    return os.path.exist(ohmybash_dir) ans os.path.isdir(ohmybash_dir)
+
+def install_oh_my_bash():
+    if(is_oh_my_bash_installed):
+        print(f'{colors.GREEN}* oh my bash installed{colors.RESET}\n')
+    else:
+        print(f'{colors.RED}* oh my bash is not installed. Installing...{colors.RESET}\n')
+        os.system('bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"')
+        print(f'{colors.GREEN}* oh my bash installed{colors.RESET}\n')
 
 # Run the playbook
 def run_playbook(iso):
