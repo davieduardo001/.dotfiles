@@ -142,7 +142,7 @@ def install_ansible(iso):
 # Install oh my bash
 def is_oh_my_bash_installed():
     ohmybash_dir = '~/.oh-my-bash'
-    return os.path.exist(ohmybash_dir) ans os.path.isdir(ohmybash_dir)
+    return os.path.exist(ohmybash_dir) and os.path.isdir(ohmybash_dir)
 
 def install_oh_my_bash():
     if(is_oh_my_bash_installed):
@@ -154,6 +154,15 @@ def install_oh_my_bash():
 
 # Run the playbook
 def run_playbook(iso):
+
+    if iso != 'wsl':
+        
+        print(f'{colors.YELLOW}\nSTART THE GENERAL PLAYBOOK{colors.RESET}\n')
+        command = f'ansible-playbook --diff {DOTFILES_DIR}/playbooks/start.yml'
+        os.system(command)
+        print(f'{colors.YELLOW}\nSTART THE SPECIFIC PLAYBOOK{colors.RESET}\n')
+
+
     if iso == 'arch':
         command = f'ansible-playbook --diff {DOTFILES_DIR}/playbooks/arch.yml'
         os.system(command)

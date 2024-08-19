@@ -1,0 +1,101 @@
+---
+- name: Prepare the workstation
+  hosts: localhost
+  connection: local
+  tasks:
+
+    # install JetBrainsMono
+    - name: install JetBrainsMono
+      block:
+        - name: Find JetBrainsMono fonts
+          find:
+            paths: '{{ ansible_user_dir }}/.local/share/fonts/'
+            patterns: 'JetBrainsMono*'
+          register: font_found
+
+        - name: Ensure fonts directory exists
+          file:
+            path: '{{ ansible_user_dir }}/.local/share/fonts'
+            state: directory
+            mode: '0755'
+
+        - name: Download JetBrainsMono zip
+          get_url:
+            url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.zip
+            dest: /tmp/JetBrainsMono.zip
+          when: font_found.matched == 0
+
+        - name: Unzip JetBrainsMono fonts
+          unarchive:
+            src: /tmp/JetBrainsMono.zip
+            dest: '{{ ansible_user_dir }}/.local/share/fonts/'
+            remote_src: yes
+          when: font_found.matched == 0
+
+        - name: Update font cache
+          command: fc-cache -fv
+          when: font_found.matched == 0
+
+    # config kitty
+    - name: config terminal emulator
+      block:
+        - name: Remove existing kitty file
+          file:
+            path: '{{ ansible_env.HOME }}/.config/kitty'
+            state: absent
+          ignore_errors: yes
+
+        - name: Create or ensure the kitty directory exists
+          file:
+            path: '{{ ansible_env.HOME }}/.config/kitty'
+            state: directory
+
+        - name: Create symbolic link to kitty.conf
+          command: >
+            ln -sf '{{ ansible_env.HOME }}/.dotfiles/dotfiles/kitty/kitty.conf' '{{ ansible_env.HOME }}/.config/kitty/kitty.conf'
+          args:
+            creates: '{{ ansible_env.HOME }}/.config/kitty/kitty.conf'
+
+        - name: Create symbolic link to theme.conf
+          command: >
+            ln -sf '{{ ansible_env.HOME }}/.dotfiles/dotfiles/kitty/theme.conf' '{{ ansible_env.HOME }}/.config/kitty/theme.conf'
+          args:
+            creates: '{{ ansible_env.HOME }}/.config/kitty/theme.conf'
+
+    # config shell
+    - name: Config bash
+      block:
+        - name: Set up bash theme
+          lineinfile:
+            path: ~/.bashrc
+            regexp: '^OSH_THEME='
+            line: 'OSH_THEME="absimple"'
+            state: present
+
+        - name: Set up dotfiles alias
+          lineinfile:
+            path: ~/.bashrc
+            line: 'alias py="python3"'
+            create: yes
+            state: present
+      
+        - name: Set up dotfiles alias
+          lineinfile:
+            path: ~/.bashrc
+            line: 'alias dotfiles="~/.dotfiles/bin/dotfiles"'
+            create: yes
+            state: present
+   
+        - name: Ensure NVM_DIR is set in .bashrc
+          lineinfile:
+            path: "{{ ansible_env.HOME }}/.bashrc"
+            line: 'export NVM_DIR="$HOME/.nvm"'
+            create: yes
+            state: present
+
+        - name: Ensure NVM initialization script is sourced in .bashrc
+          lineinfile:
+            path: "{{ ansible_env.HOME }}/.bashrc"
+            line: '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm'
+            create: yes
+            state: present
