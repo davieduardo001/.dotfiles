@@ -22,6 +22,7 @@
         - vim
         - less
         - keepass2
+        - transmission
 
     # INSTALL VISUAL STUDIO CODE
     - name: Install Visual Studio Code
