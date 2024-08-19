@@ -29,7 +29,7 @@
           lineinfile:
             path: ~/.bashrc
             regexp: '^OSH_THEME='
-            line: 'OSH_THEME="clean"'
+            line: 'OSH_THEME="absimple"'
             state: present
 
         - name: Set up dotfiles alias
